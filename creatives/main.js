@@ -4,7 +4,6 @@ const generalObserver = new IntersectionObserver(entries => {
 	if(entry.isIntersecting){
 		let elem = arrAnimElem.find(item => item.target === entry.target)
 		if(elem !== undefined && !elem.wasShow){
-			console.log("yes")
 			 elem.target.classList.add(elem.classAdd)
 			 elem.wasShow = true
 		}
@@ -269,28 +268,3 @@ window.onload = () => {
 	addToArray()
 	addForObserver()
 }
-
-
-
-
-/*window.onload = () => {
-				const observerOne = new IntersectionObserver(entries => {
-				entries.forEach(entry => {
-				if(entry.isIntersecting){
-					console.log(entry)
-					console.log("VISIBILITY")
-					}
-				})
-			})
-		const observerTwo = new IntersectionObserver(entries => {
-		entries.forEach(entry => {
-			if(entry.isIntersecting){
-				console.log(entry)
-				console.log("VISIBILITY")
-			}
-		})
-	})
-		observer.observe(document.querySelector(".section-three"))
-		observer.observe(document.querySelector(".section-four"))
-
-}*/
