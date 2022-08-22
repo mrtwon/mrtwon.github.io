@@ -1,3 +1,4 @@
+let isOffScroll = false
 let arrAnimElem = []
 const generalObserver = new IntersectionObserver(entries => {
 	entries.forEach(entry => {
@@ -241,7 +242,6 @@ function addListener(){
 	window.addEventListener('hashchange', () => {
 		let scrollEvent = window.location.hash.substr(1)
 		if(scrollEvent === "features"){
-			alert('ok')
 			document.querySelector(".section-two").scrollIntoView({
 				block: 'start',
 				behavior: 'smooth'
@@ -252,6 +252,7 @@ function addListener(){
 		let elem = document.querySelector('.float-menu')
 		elem.style.width = "100vw"
 		elem.style.opacity = "1.0"
+		isOffScroll = true
 	}
 	document.querySelector('.close-menu > img').onclick = () => {
 		let elem = document.querySelector('.float-menu')
@@ -259,9 +260,13 @@ function addListener(){
 		setTimeout(() => {
 			elem.style.width = "0vw"
 		}, 800)
+		isOffScroll = false
 	}
 
 }
+window.onscroll = function () { 
+	if(isOffScroll) window.scrollTo(0, 0);
+};
 
 window.onload = () => {
 	addListener()
