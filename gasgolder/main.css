@@ -1043,8 +1043,8 @@ header .burger-menu {
 
 .width-wrapper {
   box-sizing: border-box;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 @media screen and (min-width: 2000px) {
@@ -1072,6 +1072,8 @@ header .burger-menu {
     margin-left: inherit;
     width: 100%;
     box-sizing: border-box;
+    padding-left: 100px;
+    padding-right: 0px;
   }
   .block-one .content .section-1 {
     flex-direction: column;
@@ -1097,6 +1099,8 @@ header .burger-menu {
     width: 100%;
     margin-top: 110px;
     margin-bottom: 110px;
+    padding-left: 0px;
+    padding-right: 0px;
   }
 }
 @media screen and (max-width: 840px) {
