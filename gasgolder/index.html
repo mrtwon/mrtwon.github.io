@@ -1,0 +1,569 @@
+<html>
+    <title>Learning</title>
+    <link rel="stylesheet" href="main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        window.onload = () => {
+            var startx = 0
+            var dist = 0
+            let touched = false
+
+
+            document.querySelector('.next-left').onclick = () =>{
+                nextLeft()
+            }
+            document.querySelector('.next-right').onclick = () => {
+                nextRight()
+            }
+            onClickBtnOrder()
+            onClickQuestion()
+
+
+
+        function onClickQuestion(){
+            let questionElements = document.querySelectorAll('.question-box > .question')
+            for(let oneQuestion of questionElements){
+                let img = oneQuestion.querySelector('img')
+                img.onclick = () =>{
+                    let questionText = oneQuestion.querySelector('.question-text > .question-title')
+                    let extendText = oneQuestion.querySelector('.question-text > .extend-text')
+                    if(img.classList.contains('question-img-active')){
+                        img.classList.remove('question-img-active')
+                        questionText.classList.remove('question-title-active')
+                        extendText.style.display = "none"
+                    }else{
+                        img.classList.add('question-img-active')
+                        questionText.classList.add('question-title-active')
+                        extendText.style.display = "block"
+                    }
+                }
+            }
+        }
+        function onClickBtnOrder(){
+            let elements = document.querySelectorAll('.group-buttons > .button')
+            let orderButton = document.querySelector('.order-button')
+            console.log(elements.innerHTML)
+            for(let elem of elements){
+                elem.onclick = () => {
+                    for(let _elem of elements){
+                        _elem.classList.remove('button-active')
+                    }
+                    elem.classList.add('button-active')
+                    orderButton.style.transform = 'scale(1.2)'
+                    setTimeout(()=>{
+                        orderButton.style.transform = 'scale(1.0)'    
+                    },500)
+                }
+            }
+        }
+        function nextSlider(isNext, mobile){
+            let sliderList
+            let activeIndicatorName
+            if(mobile){
+                sliderList = document.querySelectorAll('.mobile-slide-indicator-box > .mobile-slide-indicator')
+                activeIndicatorName = 'mobile-active-indicator'
+            }else{
+                sliderList = document.querySelectorAll('.slide-indicator-box > .slide-indicator')
+                activeIndicatorName = 'active-indicator'
+            }
+            console.log(sliderList)
+            console.log(activeIndicatorName)
+            if(isNext){
+                for(let i = 0; i < sliderList.length; i++){
+                    if(sliderList[i].classList.contains(activeIndicatorName)){
+                        sliderList[i].classList.remove(activeIndicatorName)
+                        if(sliderList[i+1] === undefined){
+                            sliderList[0].classList.add(activeIndicatorName)
+                        }else{
+                            sliderList[i+1].classList.add(activeIndicatorName)
+                        }
+                        break
+                    }
+                }
+            }else{
+                for(let i = 0; i < sliderList.length; i++){
+                    if(sliderList[i].classList.contains(activeIndicatorName)){
+                        sliderList[i].classList.remove(activeIndicatorName)
+                        if(sliderList[i-1] === undefined){
+                            sliderList[sliderList.length-1].classList.add(activeIndicatorName)
+                        }else{
+                            sliderList[i-1].classList.add(activeIndicatorName)
+                        }
+                        break
+                    }
+                }
+            }
+        }
+        function nextRight(){
+            let card = document.querySelector('.three-card')
+                card.style.transition = "all .3s"
+                card.style.transform = "translate(-100px, 0px)"
+                card.style.opacity = "0.0"
+                setTimeout(() => {
+                    card.style.transform = "translate(100px, 0px)"
+                    setTimeout(() => {
+                        card.style.transform = "translate(0px, 0px)"
+                        card.style.opacity = "1.0"
+                        nextSlider(true, false)
+                    }, 300);
+                }, 300);
+        }
+        function nextLeft(){
+                let card = document.querySelector('.three-card')
+                card.style.transition = "all .3s"
+                card.style.transform = "translate(100px, 0px)"
+                card.style.opacity = "0.0"
+                setTimeout(() => {
+                    card.style.transform = "translate(-100px, 0px)"
+                    setTimeout(() => {
+                        card.style.transform = "translate(0px, 0px)"
+                        card.style.opacity = "1.0"
+                        nextSlider(false, false)
+                    }, 300);
+                }, 300);
+        }
+        function nextRightMobile(){
+            let card = document.querySelector('.mobile-three-card')
+                card.style.transition = "all .3s"
+                card.style.transform = "translate(-100px, 0px)"
+                card.style.opacity = "0.0"
+                setTimeout(() => {
+                    card.style.transform = "translate(100px, 0px)"
+                    setTimeout(() => {
+                        card.style.transform = "translate(0px, 0px)"
+                        card.style.opacity = "1.0"
+                        nextSlider(true, true)
+                    }, 300);
+                }, 300);
+        }
+        function nextLeftMobile(){
+                let card = document.querySelector('.mobile-three-card')
+                card.style.transition = "all .3s"
+                card.style.transform = "translate(100px, 0px)"
+                card.style.opacity = "0.0"
+                setTimeout(() => {
+                    card.style.transform = "translate(-100px, 0px)"
+                    setTimeout(() => {
+                        card.style.transform = "translate(0px, 0px)"
+                        card.style.opacity = "1.0"
+                        nextSlider(false, true)
+                    }, 300);
+                }, 300);
+        }
+
+        
+        function onMove(position){
+                if(position >= 40 && touched){
+                    nextLeftMobile()
+                    console.log('left')
+                    touched = false
+                }
+                if(-40 > position && touched){
+                    console.log('right')
+                    nextRightMobile()
+                    touched = false
+                }
+            }
+        let cardElement = document.querySelector('.mobile-three-card')
+        cardElement.addEventListener('touchstart', function(e){
+                var touchobj = e.changedTouches[0]
+                startx = parseInt(touchobj.clientX)
+                e.preventDefault()
+                touched = true
+        }, false)
+        cardElement.addEventListener('touchmove', function(e){
+                var touchobj = e.changedTouches[0]
+                var dist = parseInt(touchobj.clientX) - startx
+                onMove(dist)
+                e.preventDefault()
+        }, false)
+        cardElement.addEventListener('touchend', function(e){
+                var touchobj = e.changedTouches[0]
+                e.preventDefault()
+        }, false)
+    }
+    </script>
+
+    <body>
+        <header class="width-wrapper">
+            <div class="logo-wrapper">
+                <img src="images/Logo.svg" alt="logo"/>
+                <div class="logo-share"></div>
+                <p class="slogan">Расправь плечи <br>в теплом доме</p>
+            </div>
+            <div class="contacts">
+                <p class="contacts-number">+7 926 330-68-34</p>
+                <p class="contacts-description">Срочный вопрос</p>
+            </div>
+                <img class="burger-menu" src="images/menu.png" alt="menu"/>
+        </header>
+        <section class="block-one">
+            <div class="content">
+                <div class="section-group">
+                    <div class="section-1">
+                        <div class="weather-wrapper">
+                            <div class="weather">
+                                <img src="images/luna.svg" alt="weather">
+                                <img src="images/next.svg" alt="weather">
+                                <img src="images/sun.svg" alt="weather">
+                            </div>
+                            <p>В любое время дня и ночи</p>
+                        </div>
+                        <div class="weather-wrapper">
+                            <div class="weather">
+                                <img src="images/clouds.svg" alt="weather">
+                                <img src="images/next.svg" alt="weather">
+                                <img src="images/snowflake.svg" alt="weather">
+                            </div>
+                            <p>Вне зависимости от погодных условий</p>
+                        </div>
+                    </div>
+                    <div class="section-2">
+                        <p>Доставим газ<br>за 4 часа</p>
+                    </div>
+                    <div class="section-3">
+                        <p>в любую точку Москвы<br>и московской области</p>
+                        <img class="indicator" src="images/indicator.svg" alt="indicator">
+                    </div>
+                    <div class="section-4">
+                        <img src="images/btn-order.svg" alt="order button">
+                        <p>Доставка газа всегда по актуальным ценам</p>
+                    </div>
+                </div>
+            </div>
+            <div class='truck'></div>
+        </section>
+        <section class="block-two">
+            <div class="wrapper-block-two width-wrapper">
+            <p class="price-title">Стоимость газа в ваш газголдер сегодня</p>
+            <div class="section-1">
+                <div class="product">
+                    <p class="product-name product-name-1">Пропан</p>
+                    <p class="price price-1">от 25 рублей за литр</p>
+                    <p class="desc desc-1">Физически испарение происходит до -40 градусов, что позволяет использовать его в наших с вами погодных условиях</p>
+                    <p class="order order-1">Заказать</p>
+                </div>
+                <div class="by-price">
+                    <p class="title">Идеальное соотношение</p>
+                    <div class="percent-data">
+                        <p class="one-percent-big">80%<br><span class="one-percent-small">пропана</span></p>
+                        <div class="diliver"></div>
+                        <p class="one-percent-big">20%<br><span class="one-percent-small">бутана</span></p>
+                        
+                    </div>
+                    <img class="truck" src="images/truck2.svg" alt="truck">    
+                </div>
+                <div class="product">
+                    <p class="product-name product-name-2">Бутан</p>
+                    <p class="price price-2">от 16 рублей за литр</p>
+                    <p class="desc desc-2">Испарение Бутана происходит только до 0 градусов и годится для использования в тёплое время года</p>
+                    <p class="order order-2">Заказать</p>
+                </div>
+            </div>
+            </div>
+        </section>
+        <section class="block-three">
+            <div class="block-three-wrapper width-wrapper">
+            <p class="block-title">Преимущество работы с нашей компанией</p>
+            <div class="advantages">
+                <div class="advantage">
+                    <img class="image" src="images/a-1.svg" alt="advantage image">
+                    <p class="title">Экономия<br>на хранилище</p>
+                    <p class="description">за счёт собственных цистерн<br>
+                        на нашей базе</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-2.svg" alt="advantage image">
+                    <p class="title">Экономия<br>
+                        на транспорте</p>
+                    <p class="description">более 10 собственный газовозов</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-3.svg" alt="advantage image">
+                    <p class="title">Поставки напрямую<br>
+                        от производителей</p>
+                    <p class="description">нет наценки на стоимость газа как у<br>перекупщиков и небольших частных компаний</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-4.svg" alt="advantage image">
+                    <p class="title">Любые объёмы поставки<br>качественного газа</p>
+                    <p class="description">вы получаете объем от 1 тонны до 20 тонн,<br>с сертификатом качества газа</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-5.svg" alt="advantage image">
+                    <p class="title">Оплата удобным<br>для вас способом</p>
+                    <p class="description">все газовозы оснащены терминалами для<br>оплаты вашего заказа</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-6.svg" alt="advantage image">
+                    <p class="title">Чистый газ<br>без примесей</p>
+                    <p class="description">нет наценки на стоимость газа как у<br>перекупщиков и небольших частных<br>компаний</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-7.svg" alt="advantage image">
+                    <p class="title">Длина заправочных<br>рукавов — 50 метров</p>
+                    <p class="description">не требуется подъезд автомобиля<br>вплотную к резервуару</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-8.svg" alt="advantage image">
+                    <p class="title">Доставка сжиженного газа<br>в формате 24/7</p>
+                    <p class="description">привезем газ в удобное для вас<br> время или же  по графику</p>
+                </div>
+                <div class="advantage">
+                    <img class="image" src="images/a-9.svg" alt="advantage image">
+                    <p class="title">Аттестованный<br>персонал</p>
+                    <p class="description">квалифицированные сотрудники<br>проведут полную консультацию и дадут<br>рекомендации, если такие нужны будут</p>
+                </div>
+            </div>
+            <div class="guarantees">
+                <div class="truck"></div>
+                <div class="info-block">
+                    <p class="info-text">Благодаря нашему<br>собственному автопарку мы<br> можем
+                        давать гарантию, что<br>доставим <span>за 4 час</span></p>
+                    <div class="additional-text"><p>Это сильное конкурентное преимущество, которым мы дорожим</p></div>
+                </div>
+            </div>
+        </div>
+        </section>
+        <section class="block-four">
+            <div class="block-four-wrapper width-wrapper">
+            <p class="block-title">Выберите свой объём Газовоза</p>
+            <div class="group-buttons">
+                <div class="button button-active"><p>Малый<br>2000 л.</p></div>
+                <div class="button"><p>Средний<br>6000 л.</p></div>
+                <div class="button"><p>Стандартый<br>10 000 л.</p></div>
+                <div class="button"><p>Оптовый<br>40 000 л.</p></div>
+            </div>
+            <div class="order">
+                <div class="truck-wrapper">
+                    <img class="truck" src="images/truck-b4.svg" alt="truck"/>
+                </div>
+                <div class="order-button-wrapper">
+                    <img class="order-button" src="images/btn-b4.svg" alt="order button"/>
+                </div>
+            </div>
+            </div>
+        </section>
+        <section class="block-five">
+            <div class="block-five-wrapper width-wrapper">
+            <p class="reviews-title">
+                Отзывы наших клиентов
+            </p>
+
+
+            <!--
+                desktop version
+            -->
+            <div class="desktop-version">
+            <div class="card-review-wrapper">
+                <img class="next-btn next-left" src="images/next-left.svg" alt="next">
+                <div class="card-review-box">
+                    <div class="one-card card"></div>
+                    <div class="two-card card"></div>
+                        <div class="three-card card review-content">
+                            <div class="testing"></div>
+                            <div class="photo-wrapper">
+                                <img class="photo" src="images/review-client.png" alt="client"/>
+                            </div>
+                            <div class="review-text-block">
+                                <p class="name">Ольга И.</p>
+                                <p class="city">Красногорск</p>
+                                <p class="description">
+                                    Я  всегда боюсь газа , а особенно боюсь что он может взорваться, как же мне помог Андрей водитель-экспедитор показал что бояться тут нечего и самое главное моего присутствие даже не понадобится.  Спасибо  компании за то что они все закрыли  этот вопрос под ключ.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <img class="next-btn next-right" src="images/next-right.svg" alt="next">
+                </div>
+                <div class="slide-indicator-box">
+                    <div class="slide-indicator active-indicator"></div>
+                    <div class="slide-indicator"></div>
+                    <div class="slide-indicator"></div>
+                    <div class="slide-indicator"></div>
+                    <div class="slide-indicator"></div>
+                </div>
+                </div>
+
+                <!--
+                    mobile version
+                -->
+            <div class="mobile-version">
+            <div class="mobile-card-review-wrapper">
+            <img class="mobile-next-btn" src="images/next-left.svg" alt="next">
+            <div class="mobile-card-review-box">
+                <div class="mobile-one-card mobile-card"></div>
+                <div class="mobile-two-card mobile-card"></div>
+                    <div class="mobile-three-card mobile-card mobile-review-content">
+                        
+                        <!-- <div class="mobile-photo-wrapper">
+                            <img class="mobile-photo" src="images/review-client.png" alt="client"/>
+                        </div> -->
+                        <div class="mobile-review-text-block">
+                            <div class="mobile-base-info">
+                                <div class="mobile-photo-wrapper">
+                                    <img class="mobile-photo" src="images/review-client.png" alt="client"/>
+                                </div>
+                                <div class="mobile-bio">
+                                    <p class="mobile-name">Ольга И.</p>
+                                    <p class="mobile-city">Красногорск</p>
+                                </div>
+                            </div>
+                            <p class="mobile-description">
+                                Я  всегда боюсь газа , а особенно боюсь что он может взорваться, как же мне помог Андрей водитель-экспедитор показал что бояться тут нечего и самое главное моего присутствие даже не понадобится.  Спасибо  компании за то что они все закрыли  этот вопрос под ключ.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <img class="mobile-next-btn" src="images/next-right.svg" alt="next">
+            </div>
+            <div class="mobile-slide-indicator-box">
+                <div class="mobile-slide-indicator mobile-active-indicator"></div>
+                <div class="mobile-slide-indicator"></div>
+                <div class="mobile-slide-indicator"></div>
+                <div class="mobile-slide-indicator"></div>
+                <div class="mobile-slide-indicator"></div>
+            </div>
+            </div>
+            </div>
+        </section>
+        <section class="block-six">
+            <div class="block-six-wrapper width-wrapper">
+            <p class="title">Ответы на часто задаваемые вопросы</p>
+            <div class="question-box">
+                <div class="question">
+                    <img src="images/indicator-bottom.svg" alt="indicator">    
+                    <div class="question-text">
+                        <p class="question-title">Есть ли у вас инженеры в компании?</p>
+                        <div class="extend-text">
+                            <p>За счёт длинны в 50 м. делаем заправку не заезжая и не портим газон, а так же не мешаем соседям</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="question">
+                        <img src="images/indicator-bottom.svg" alt="indicator">
+                        <div class="question-text">
+                            <p  class="question-title">Делаете ли вы отчистку газгольдера?</p>
+                            <div class="extend-text">
+                                <p>За счёт длинны в 50 м. делаем заправку не заезжая и не портим газон, а так же не мешаем соседям</p>
+                            </div>
+                        </div>
+                </div>
+                <div class="question">
+                        <img  src="images/indicator-bottom.svg" alt="indicator">
+                        <div class="question-text">
+                            <p class="question-title">А вы не испортите газон у меня и соседей?</p>
+                            <div class="extend-text">
+                                <p>За счёт длинны в 50 м. делаем заправку не заезжая и не портим газон, а так же не мешаем соседям</p>
+                            </div>
+                        </div>
+                </div>
+                <div class="question">
+                        <img src="images/indicator-bottom.svg" alt="indicator">
+                        <div class="question-text">
+                            <p class="question-title">Вы предоставляете документы для субсидий?</p>
+                            <div class="extend-text">
+                                <p>За счёт длинны в 50 м. делаем заправку не заезжая и не портим газон, а так же не мешаем соседям</p>
+                            </div>
+                        </div>
+                </div>
+                <div class="question">
+                        <img src="images/indicator-bottom.svg" alt="indicator">
+                        <div class="question-text">
+                            <p class="question-title">Смогу ли я заказать во время праздников?</p>
+                            <div class="extend-text">
+                                <p>За счёт длинны в 50 м. делаем заправку не заезжая и не портим газон, а так же не мешаем соседям</p>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            </div>
+        </section>
+        <section class="block-seven">
+            <div class="block-seven-wrapper width-wrapper">
+            <!-- <div class="container">
+                <div class="item1"></div>
+                <div class="item2"></div>
+            </div> -->
+
+
+
+            <div class="callback-flex">
+                <div class="callback-box">
+                    <p class="callback-text">Не нашли ответа на свой вопрос задайте их нашему специалисту</p>
+                    <div class="callback-form-box">
+                        <input placeholder="имя"/>
+                        <input placeholder="телефон"/>
+                        <textarea placeholder="вопрос"></textarea>
+                        <p class="btn-send">Задать вопрос</p>
+                    </div>
+                </div>
+                <!-- <div class="placeholder"></div> -->
+                <div class="photo-personal">
+                    <p class="info-by-personal">
+                        <span>Роман Ш.</span><br>
+                        Старший менеджер
+                    </p>
+            </div>
+            </div>
+            <div class="logo-list-block">
+                <div class="one-logo">
+                   <img src="images/logo-rosneft.png" alt="logo">
+                </div>
+                <div class="one-logo">
+                    <img src="images/logo-bahneft.png" alt="logo">
+                </div>
+                <div class="one-logo">
+                    <img src="images/logo-transneft.png" alt="logo">
+                </div>
+                <div class="one-logo">
+                    <img src="images/logo-gasprom.png" alt="logo">
+                </div>
+                <div class="one-logo">
+                    <img src="images/logo-luqoil.png" alt="logo">
+                </div>
+                <div class="one-logo">
+                    <img src="images/logo-tatneft.png" alt="logo">
+                </div>
+            </div>
+            <div class="make-order-div">
+                <p class="title">Закажи прямо сейчас и получи<br>
+                    бесплатную установку телеметрии</p>
+                <img src="images/btn-b4.svg" alt="button-order"/>
+            </div>
+        </div>
+        </section>
+        <section class="block-eight">
+            <div class="block-eight-wrapper width-wrapper">
+            <div class="address-company">
+                <div class="one-block">
+                    <p class="office-title">
+                        Посетите наш<br>уютный офис
+                    </p>
+                    <p class="consultation-title">
+                        где мы сможем вас полностью<br>
+                        проконсультировать по всем  вопросам
+                    </p>
+                    <div class="divider"></div>
+                    <div class="contacts">
+                        <div class="contact-div">
+                            <p class="name">офис</p>
+                            <p class="data">Видное , Белокаменное шоссе, 20</p>
+                        </div>
+                        <div class="contact-div">
+                            <p class="name">телефон:</p>
+                            <p class="data">+7 926 330-68-34</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="two-block">
+                    <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=%D0%92%D0%B8%D0%B4%D0%BD%D0%BE%D0%B5%20,%20%D0%91%D0%B5%D0%BB%D0%BE%D0%BA%D0%B0%D0%BC%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5%20%D1%88%D0%BE%D1%81%D1%81%D0%B5,%2020+(My%20Business%20Name)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"><a href="https://www.maps.ie/distance-area-calculator.html">measure area map</a></iframe></div>
+                </div>
+            </div>
+        </div>
+        </section>
+    </body>
+</html>
